@@ -1,6 +1,8 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import * as searchView from './views/searchView';
+import * as recipeView from './views/recipeView';
+
 import {
   elements,
   renderLoader,
@@ -51,6 +53,13 @@ elements.searchForm.addEventListener('submit', e => {
   controlSearch();
 });
 
+elements.searchForm.addEventListener('load', e => {
+  e.preventDefault();
+  controlSearch();
+});
+
+
+
 elements.searchResPages.addEventListener('click', e => {
   const btn = e.target.closest('.btn-inline');
   if (btn) {
@@ -73,22 +82,25 @@ const controlRecipe = async () => {
 
   if (id) {
     // Prepare UI for changes
-
+    renderLoader(elements.recipe);
     // Create new recipe object
     state.recipe = new Recipe(id);
+
     // Get recipe data
     try {
       await state.recipe.getRecipe();
+      state.recipe.calcTime();
+      state.recipe.calcServings();
+      state.recipe.parseIngedients();
+      console.log( state.recipe); 
+      clearLoader();
+      recipeView.renderRecipe(state.recipe);
+     
     } catch(err) {
       console.log(err);
       alert('Sorry, something go wrong');
     }
 
-    // Calculate srving and time
-    state.recipe.calcTime();
-    state.recipe.calcServings();
-    // rencder recipe 
-    console.log(state.recipe);
   }
 
 };
