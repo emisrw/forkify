@@ -32,10 +32,13 @@ const controlSearch = async () => {
     // 3) Preperate UI for results
     searchView.clearInput();
     searchView.clearResults();
+    console.log('before try');
     renderLoader(elements.searchRes);
+
     // 4) Search for recipes
     try {
       await state.search.getResults();
+      
       clearLoader();
       searchView.renderResults(state.search.result);
     } catch(err) {
@@ -82,17 +85,18 @@ const controlRecipe = async () => {
 
   if (id) {
     // Prepare UI for changes
+    recipeView.clearRecipe();
     renderLoader(elements.recipe);
+    if(state.search) recipeView.highlightSelected(id);
     // Create new recipe object
     state.recipe = new Recipe(id);
-
     // Get recipe data
     try {
       await state.recipe.getRecipe();
       state.recipe.calcTime();
       state.recipe.calcServings();
       state.recipe.parseIngedients();
-      console.log( state.recipe); 
+    
       clearLoader();
       recipeView.renderRecipe(state.recipe);
      
