@@ -11,8 +11,7 @@ const formatCount = count => {
         // count = 0.5 --> 1/2
         const newCount = Math.round(count * 10000) / 10000;
         const [int, dec] = newCount.toString().split('.').map(el => parseInt(el, 10));
-            console.log(int);
-            console.log(dec);
+       
         if (!dec) return newCount;
 
         if (int === 0) {

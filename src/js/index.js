@@ -1,5 +1,6 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
+import List from './models/List';
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
 
@@ -114,8 +115,7 @@ const controlRecipe = async () => {
 
 elements.recipe.addEventListener('click', e=> {
   if(e.target.matches('.btn-decrease, .btn-decrease *')) {
-    // Decrease button in lcicked
-    console.log(state.recipe.serving);
+
     if(state.recipe.servings > 1 ) {
       state.recipe.updateServings('dec');
    
@@ -129,3 +129,5 @@ elements.recipe.addEventListener('click', e=> {
 
 })
 // Handling recipe button clicks
+
+window.l = new List();
