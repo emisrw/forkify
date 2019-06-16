@@ -3,12 +3,13 @@ import Recipe from './models/Recipe';
 import List from './models/List';
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
-
+import * as listView from './views/listView';
 import {
   elements,
   renderLoader,
   clearLoader
 } from './views/base';
+
 /**  Global state of the app
  *- Search object
  *- Current recipe object
@@ -33,7 +34,7 @@ const controlSearch = async () => {
     // 3) Preperate UI for results
     searchView.clearInput();
     searchView.clearResults();
-    console.log('before try');
+
     renderLoader(elements.searchRes);
 
     // 4) Search for recipes
@@ -113,6 +114,38 @@ const controlRecipe = async () => {
 // window.addEventListener('load', controlRecipe);
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
 
+
+
+/** 
+ * LIST CONTROLLER
+ * 
+ */
+
+ const controlList = () => {
+   // Create a new list IF there is none yet
+   if(!state.list) state.list = new List();
+
+   // Add each ingredient to the list
+   state.recipe.ingredients.forEach(el => {
+    const item = state.list.addItem(el.count, el.unit, el.ingredient);
+    listView.renderItem(item);
+   });
+ };
+
+// Handle delete and update list events
+elements.shopping.addEventListener('click', e=> {
+  const id = e.target.closest('.shopping__item').dataset.itemid;
+  // handle delete button
+  if(e.target.matches('.shopping__delete, .shopping__delete *')) {
+    // delete from state
+     state.list.deleteItem(id);
+    // delete from UI
+    console.log('item id ' + id);
+     listView.deleteItem(id);
+  }
+});
+
+
 elements.recipe.addEventListener('click', e=> {
   if(e.target.matches('.btn-decrease, .btn-decrease *')) {
 
@@ -125,9 +158,10 @@ elements.recipe.addEventListener('click', e=> {
   } else if(e.target.matches('.btn-increase, .btn-increase *'))  {
     state.recipe.updateServings('inc');
     recipeView.updateServingsIngredients(state.recipe);
+  } else if(e.target.matches('.recipe__btn--add, .recipe__btn--add *')) {
+    controlList();
   }
-
-})
+  
+});
 // Handling recipe button clicks
 
-window.l = new List();
